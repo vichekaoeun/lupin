@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly';
+import { PollyClient, SynthesizeSpeechCommand, VoiceId } from '@aws-sdk/client-polly';
 import { rateLimit, tooManyRequests } from '@/lib/ratelimit';
 import { getUserId } from '@/lib/auth';
 
@@ -12,7 +12,7 @@ import { getUserId } from '@/lib/auth';
 //   POLLY_REGION   — default AWS_REGION or 'us-east-1'
 
 const REGION = process.env.POLLY_REGION ?? process.env.AWS_REGION ?? 'us-east-1';
-const VOICE  = (process.env.POLLY_VOICE_ID ?? 'Kazuha') as string;
+const VOICE = (process.env.POLLY_VOICE_ID ?? 'Kazuha') as VoiceId;
 
 let _client: PollyClient | null = null;
 function getClient() {
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
   try {
     const command = new SynthesizeSpeechCommand({
       Text: text,
-      VoiceId: VOICE as Parameters<typeof SynthesizeSpeechCommand>[0]['VoiceId'],
+      VoiceId: VOICE,
       OutputFormat: 'mp3',
       Engine: 'neural',
       LanguageCode: 'ja-JP',
