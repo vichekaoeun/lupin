@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
     // AudioStream is a web ReadableStream in the AWS SDK v3
     const bytes = await res.AudioStream.transformToByteArray();
 
-    return new Response(bytes, {
+    return new Response(Buffer.from(bytes), {
       headers: {
         'Content-Type': 'audio/mpeg',
         'Cache-Control': 'public, max-age=86400', // cache a word for 24h
