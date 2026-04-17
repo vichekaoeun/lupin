@@ -277,7 +277,7 @@ export default function CardsClient() {
                           <label className="text-xs text-[#3a3a5a] mb-1 block">{label}</label>
                           <input
                             type="text"
-                            value={(editState as Record<string, string>)[key]}
+                            value={(editState as unknown as Record<string, string>)[key]}
                             onChange={(e) => setEditState((s) => s ? { ...s, [key]: e.target.value } : s)}
                             className={`${jp ? 'jp ' : ''}w-full rounded-lg px-3 py-2 text-sm outline-none transition-all`}
                             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#e0d8f0' }}
