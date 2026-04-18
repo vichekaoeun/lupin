@@ -19,8 +19,11 @@ let _verifier: ReturnType<typeof CognitoJwtVerifier.create> | null = null;
 
 function getVerifier() {
   if (!_verifier) {
+    const userPoolId = process.env.COGNITO_USER_POOL_ID!;
+    // aws-jwt-verify derives the JWKS URL from the userPoolId prefix,
+    // so no explicit region needed — but we set it anyway for clarity.
     _verifier = CognitoJwtVerifier.create({
-      userPoolId: process.env.COGNITO_USER_POOL_ID!,
+      userPoolId,
       tokenUse: 'access',
       clientId: process.env.COGNITO_CLIENT_ID!,
     });

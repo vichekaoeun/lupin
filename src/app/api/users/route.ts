@@ -8,8 +8,14 @@ export async function GET(req: NextRequest) {
   try { userId = await getUserId(req); } catch (e) {
     return NextResponse.json({ error: (e as AuthError).message }, { status: 401 });
   }
-  const user = await getOrCreateUser(userId);
-  return NextResponse.json({ user });
+  try {
+    const user = await getOrCreateUser(userId);
+    return NextResponse.json({ user });
+  } catch (e) {
+    const msg = (e as Error).message ?? String(e);
+    console.error('[/api/users GET]', msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 }
 
 export async function PUT(req: NextRequest) {
