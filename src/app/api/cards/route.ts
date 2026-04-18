@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+
+export const maxDuration = 60; // seconds
 import { v4 as uuidv4 } from 'uuid';
 import { getCardsByUser, saveCard, getOrCreateUser } from '@/lib/store';
 import { enrichCard, applyEnrichment } from '@/lib/enrichment';
