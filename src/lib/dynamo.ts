@@ -28,7 +28,7 @@ import {
 import { Card, ReviewLog, UserProfile } from './types';
 
 const TABLE = process.env.DYNAMODB_TABLE_NAME!;
-const REGION = process.env.AWS_REGION ?? 'us-east-1';
+const REGION = process.env.DYNAMO_REGION ?? process.env.AWS_REGION ?? 'ca-central-1';
 const GSI1 = 'GSI1-nextReview';
 const REVIEW_TTL_DAYS = 180;
 

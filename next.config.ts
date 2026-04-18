@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
     USE_BEDROCK: process.env.USE_BEDROCK,
     BEDROCK_REGION: process.env.BEDROCK_REGION,
+    DYNAMO_REGION: process.env.DYNAMO_REGION,
     DYNAMODB_TABLE_NAME: process.env.DYNAMODB_TABLE_NAME,
     COGNITO_REGION: process.env.COGNITO_REGION,
     COGNITO_USER_POOL_ID: process.env.COGNITO_USER_POOL_ID,
