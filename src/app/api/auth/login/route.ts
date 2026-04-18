@@ -6,7 +6,7 @@ import {
 import { rateLimit, tooManyRequests } from '@/lib/ratelimit';
 
 const cognitoClient = new CognitoIdentityProviderClient({
-  region: process.env.AWS_REGION ?? 'ca-central-1',
+  region: process.env.COGNITO_REGION ?? process.env.AWS_REGION ?? 'ca-central-1',
 });
 
 export async function POST(req: NextRequest) {
