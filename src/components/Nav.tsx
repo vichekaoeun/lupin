@@ -26,7 +26,7 @@ export default function Nav() {
     >
       <div className="max-w-5xl mx-auto px-4 flex items-center h-14 gap-1">
         {/* Logo */}
-        <Link href="/" className="font-serif italic text-xl text-[#f0c040] mr-6 tracking-wide shrink-0"
+        <Link href="/dashboard" className="font-serif italic text-xl text-[#f0c040] mr-6 tracking-wide shrink-0"
           style={{ textShadow: '0 0 20px #f0c04066' }}
         >
           Lupin

@@ -2,6 +2,97 @@
 import { useEffect, useState } from 'react';
 import { JLPTLevel, SubcultureTheme, UserProfile } from '@/lib/types';
 
+function ChangePasswordPanel() {
+  const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
+
+  const panel = {
+    background: 'rgba(255,255,255,0.03)',
+    border: '1px solid rgba(255,255,255,0.07)',
+  };
+  const inputStyle = {
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.08)',
+    color: '#e0d8f0',
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (form.newPassword !== form.confirmPassword) {
+      setError('New passwords do not match');
+      return;
+    }
+    setSaving(true);
+    setError('');
+    setSaved(false);
+
+    const res = await fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentPassword: form.currentPassword, newPassword: form.newPassword }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      setSaved(true);
+      setForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setSaved(false), 2500);
+    } else {
+      setError(data.error ?? 'Password change failed');
+    }
+    setSaving(false);
+  };
+
+  return (
+    <div className="rounded-2xl p-6 space-y-4 relative overflow-hidden" style={panel}>
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: 'linear-gradient(to right, transparent, #e6303044, transparent)' }} />
+      <h2 className="text-xs font-semibold text-[#5a5a7a] uppercase tracking-widest">Change Password</h2>
+
+      <form onSubmit={handleSubmit} className="space-y-3">
+        {(['currentPassword', 'newPassword', 'confirmPassword'] as const).map((field) => (
+          <div key={field}>
+            <label className="block text-xs text-[#5a5a7a] uppercase tracking-widest mb-2">
+              {field === 'currentPassword' ? 'Current password' : field === 'newPassword' ? 'New password' : 'Confirm new password'}
+            </label>
+            <input
+              type="password"
+              value={form[field]}
+              onChange={(e) => setForm((f) => ({ ...f, [field]: e.target.value }))}
+              required
+              placeholder="••••••••"
+              className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+              style={inputStyle}
+              onFocus={(e) => e.currentTarget.style.border = '1px solid rgba(230,48,48,0.4)'}
+              onBlur={(e) => e.currentTarget.style.border = '1px solid rgba(255,255,255,0.08)'}
+            />
+          </div>
+        ))}
+
+        {error && (
+          <div className="rounded-xl px-4 py-3 text-sm text-[#e63030]"
+            style={{ background: 'rgba(230,48,48,0.08)', border: '1px solid rgba(230,48,48,0.2)' }}>
+            {error}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full rounded-xl py-2.5 font-semibold text-sm text-[#0a0a14] transition-all disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+          style={{
+            background: saved ? '#00d084' : '#e63030',
+            boxShadow: saved ? '0 0 20px #00d08444' : '0 0 20px #e6303044',
+          }}
+        >
+          {saving ? 'Updating…' : saved ? '✓ Password updated!' : 'Update password'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
 const JLPT_LEVELS: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
 const JLPT_COLORS: Record<JLPTLevel, string> = {
   N5: '#00d084', N4: '#00c8e0', N3: '#f0c040', N2: '#f07030', N1: '#e63030', unknown: '#5a5a7a',
@@ -28,7 +119,8 @@ export default function SettingsClient() {
   useEffect(() => {
     fetch('/api/users')
       .then((r) => r.json())
-      .then(({ user }: { user: UserProfile }) => {
+      .then(({ user }: { user: UserProfile | undefined }) => {
+        if (!user) return;
         setProfile(user);
         setForm({
           displayName: user.displayName,
@@ -221,6 +313,8 @@ export default function SettingsClient() {
           {saving ? 'Saving…' : saved ? '✓ Saved!' : 'Save Settings'}
         </button>
       </form>
+
+      <ChangePasswordPanel />
 
       {/* Account info */}
       <div className="rounded-2xl p-6 space-y-4 relative overflow-hidden" style={panel}>
